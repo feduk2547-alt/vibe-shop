@@ -184,3 +184,4 @@ app.post('/api/reviews', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Сервер успешно запущен на http://localhost:${PORT}`);
 });
+module.exports = app;
