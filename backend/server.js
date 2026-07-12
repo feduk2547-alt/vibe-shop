@@ -7,8 +7,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const cors = require('cors');
 
+// Указываем, что доверяем только вашему сайту на Firebase
+app.use(cors({
+  origin: 'https://vibe-shop-e05c6.web.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
+app.use(express.json()); // Убедитесь, что эта строка тоже есть
+const PORT = process.env.PORT || 5000;
+const cors = require('cors');
 // Разрешаем сайту присылать запросы и понимать формат JSON
 app.use(cors());
 app.use(express.json());
@@ -181,7 +191,9 @@ app.post('/api/reviews', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-app.listen(PORT, () => {
-  console.log(`Сервер успешно запущен на http://localhost:${PORT}`);
-});
+// В самом конце файла:
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(5000, () => console.log('Сервер запущен локально'));
+}
+
 module.exports = app;
