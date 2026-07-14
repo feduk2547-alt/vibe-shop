@@ -105,7 +105,22 @@ app.post('/api/orders', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+// Получить заказы конкретного пользователя
+app.get('/api/orders/user/:userId', async (req, res) => {
+    try {
+        const {userId} = req.params;
+        const {data, error} = await supabase
+            .from('orders')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', {ascending: false}); // Сортируем: новые сверху
 
+        if (error) return res.status(400).json({error: error.message});
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
 // =======================
 // --- РОУТЫ ДЛЯ АВТОРИЗАЦИИ ---
 // =======================
