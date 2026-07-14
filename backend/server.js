@@ -106,6 +106,43 @@ app.post('/api/orders', async (req, res) => {
     }
 });
 
+// =======================
+// --- РОУТЫ ДЛЯ АВТОРИЗАЦИИ ---
+// =======================
+
+// Регистрация нового пользователя
+app.post('/api/register', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        // Используем встроенную регистрацию Supabase
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+        });
+
+        if (error) return res.status(400).json({ error: error.message });
+        res.json({ success: true, user: data.user });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Вход (Логин)
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        // Используем встроенный логин Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (error) return res.status(400).json({ error: 'Неверный email или пароль' });
+        res.json({ success: true, user: data.user });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 // --- КОНЕЦ РОУТОВ ---
 
 // Запуск сервера
